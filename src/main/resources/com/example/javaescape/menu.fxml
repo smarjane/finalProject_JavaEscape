@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+        <?import javafx.scene.control.*?>
+        <?import javafx.scene.layout.*?>
+        <?import javafx.scene.image.ImageView?>
+        <?import javafx.scene.image.Image?>
 
-<VBox alignment="CENTER" spacing="20" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.javaescape.MenuController">
+<StackPane prefWidth="1200" prefHeight="800"
+           xmlns="http://javafx.com/javafx/17.0.12"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.javaescape.MenuController">
 
-    <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Bienvenue dans l'Escape Game" />
 
-    <Button fx:id="btnDemarrer" onAction="#onDemarrer" style="-fx-font-size: 18px; -fx-padding: 10 20;" text="Démarrer une nouvelle partie" />
+<VBox alignment="CENTER" spacing="20">
 
-    <Button fx:id="btnResumer" onAction="#onReprendre" style="-fx-font-size: 18px; -fx-padding: 10 20;" text="Reprendre" />
+<Label style="-fx-font-size: 32px; -fx-font-weight: bold;"
+       text="Bienvenue dans l'Escape Game" />
 
-    <Button fx:id="btnQuitter" onAction="#onQuitter" style="-fx-font-size: 18px; -fx-padding: 10 20;" text="Quitter" />
+<Button fx:id="btnDemarrer" onAction="#onDemarrer"
+        style="-fx-font-size: 18px; -fx-padding: 10 20;"
+        text="Démarrer une nouvelle partie" />
+
+<Button fx:id="btnResumer" onAction="#onReprendre"
+        style="-fx-font-size: 18px; -fx-padding: 10 20;"
+        text="Reprendre" />
+
+<Button fx:id="btnQuitter" onAction="#onQuitter"
+        style="-fx-font-size: 18px; -fx-padding: 10 20;"
+        text="Quitter" />
+
+<!--        <ImageView fitWidth="200" fitHeight="200">-->
+<!--                <image>-->
+<!--                        <Image url="@background.jpg"/>-->
+<!--                </image>-->
+<!--        </ImageView>-->
+
 
 </VBox>
+
+        </StackPane>
+
+
+
+

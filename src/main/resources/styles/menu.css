@@ -1,0 +1,27 @@
+.root {
+    -fx-background-image: url("../com/example/javaescape/background.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+.button {
+    -fx-font-size: 20px;
+    -fx-padding: 10 20;
+    -fx-background-color: rgba(0,0,0,0.6);
+    -fx-text-fill: black;
+    -fx-background-radius: 10;
+}
+
+.label {
+    -fx-text-fill: black;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+.root {
+    -fx-border-color: red;
+    -fx-border-width: 5;
+}
+
+
