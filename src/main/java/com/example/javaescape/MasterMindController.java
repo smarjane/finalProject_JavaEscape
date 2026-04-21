@@ -1,9 +1,14 @@
 package com.example.javaescape;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +146,8 @@ public class MasterMindController {
                 break;
 
             case VICTORY:
-                System.out.println("Suivant"); //Temporaire, après on mettera la suite des dialogues
+                System.out.println("Suivant");
+                //Temporaire, après on mettera la suite des dialogues
                 break;
         }
     }
