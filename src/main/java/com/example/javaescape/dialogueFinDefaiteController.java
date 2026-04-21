@@ -91,7 +91,7 @@ public class dialogueFinDefaiteController { //rev meme corps de dialogeuDebut
         if (index < dialogues.size()) {
             afficherDialogue();
         } else {
-            retourMenu();
+            return; // avant c'etait retourMenu() mais mtn on retourne au menu que via le bouton
         }
     }
 

@@ -216,6 +216,9 @@ public class MasterMindController {
             // Et on transfo le bouton reset en suivant pour afficher la suite
             resetButton.setText("Suivant");
             disableButtons(); // On desac aussi les autres bouton pour éviter les problèmes
+
+            allerFinVictoire(); //AJOUT MARJANE pour redirection dialogue victoire
+
             return;
         }
 
@@ -229,6 +232,10 @@ public class MasterMindController {
 
             // Ici on desac juste les boutons, on le change pas (du moins pas le visuel)
             disableButtons();
+
+            allerFinDefaite(); //AJOUT MARJANE pour redirection dialogue defaite
+
+
             return;
         }
 
@@ -326,4 +333,29 @@ public class MasterMindController {
         }
         return null;
     }
+
+    // AJOUT MARJANE navigation victoire
+    private void allerFinVictoire() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("dialogueFinVictoire.fxml"));
+            Stage stage = (Stage) remainingTriesLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // AJOUT MARJANE navigation defaite
+    private void allerFinDefaite() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("dialogueFinDefaite.fxml"));
+            Stage stage = (Stage) remainingTriesLabel.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
