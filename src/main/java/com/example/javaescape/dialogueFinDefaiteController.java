@@ -15,7 +15,7 @@ import javafx.util.Duration;
 
 import java.util.List;
 
-public class dialogueFinDefaiteController { //rev meme corps de dialogeuDebut
+public class dialogueFinDefaiteController {
 
     @FXML private ImageView imageFin;
     @FXML private TextArea zoneTexte;
@@ -24,11 +24,11 @@ public class dialogueFinDefaiteController { //rev meme corps de dialogeuDebut
     private int index = 0;
     private Timeline timeline;
     private boolean isWriting = false;
+    private boolean loadedFromSave = false;
 
     @FXML
     public void initialize() {
-
-        imageFin.setImage( //img defaite
+        imageFin.setImage(
                 new Image(getClass().getResource("/com/example/javaescape/bombeExplose.jpg").toExternalForm())
         );
 
@@ -39,7 +39,9 @@ public class dialogueFinDefaiteController { //rev meme corps de dialogeuDebut
                 "On est tous très déçu !"
         );
 
-        afficherDialogue();
+        if (!loadedFromSave) {
+            afficherDialogue();
+        }
 
         zoneTexte.setFocusTraversable(true);
         zoneTexte.requestFocus();
@@ -51,12 +53,44 @@ public class dialogueFinDefaiteController { //rev meme corps de dialogeuDebut
         });
     }
 
+    public void loadFromSave(SaveManager.GameSave save) {
+        loadedFromSave = true;
+        this.index = save.dialogueIndex;
+
+        // Arrêter toute animation en cours
+        if (timeline != null) {
+            timeline.stop();
+        }
+        isWriting = false;
+
+        javafx.application.Platform.runLater(() -> {
+            if (index >= dialogues.size()) {
+                zoneTexte.clear();
+                zoneTexte.setText(dialogues.get(dialogues.size() - 1));
+            } else {
+                zoneTexte.clear();
+                zoneTexte.setText(dialogues.get(index));
+            }
+        });
+    }
+
     private void afficherDialogue() {
-        zoneTexte.clear();
-        ecrireLettreParLettre(dialogues.get(index));
+        if (timeline != null) {
+            timeline.stop();
+        }
+
+        if (index < dialogues.size()) {
+            zoneTexte.clear();
+            ecrireLettreParLettre(dialogues.get(index));
+            saveGame();
+        }
     }
 
     private void ecrireLettreParLettre(String texte) {
+        if (timeline != null) {
+            timeline.stop();
+        }
+
         isWriting = true;
         zoneTexte.clear();
 
@@ -81,6 +115,7 @@ public class dialogueFinDefaiteController { //rev meme corps de dialogeuDebut
     private void passerDialogue() {
         if (isWriting) {
             timeline.stop();
+            zoneTexte.clear();
             zoneTexte.setText(dialogues.get(index));
             isWriting = false;
             return;
@@ -91,19 +126,39 @@ public class dialogueFinDefaiteController { //rev meme corps de dialogeuDebut
         if (index < dialogues.size()) {
             afficherDialogue();
         } else {
-            return; // avant c'etait retourMenu() mais mtn on retourne au menu que via le bouton
+            saveGame();
         }
     }
 
     @FXML
     private void retourMenu() {
         try {
+            if (timeline != null) {
+                timeline.stop();
+            }
+
+            SaveManager.deleteSave();
             Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
             Stage stage = (Stage) zoneTexte.getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            Scene scene = new Scene(root, 1200, 800);
+
+            // Recharger le CSS
+            scene.getStylesheets().add(
+                    getClass().getResource("/styles/menu.css").toExternalForm()
+            );
+
+            stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void saveGame() {
+        SaveManager.GameSave save = new SaveManager.GameSave();
+        save.currentScene = "dialogueFinDefaite";
+        save.dialogueIndex = this.index;
+        SaveManager.saveGame(save);
     }
 }
