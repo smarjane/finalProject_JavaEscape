@@ -5,4 +5,6 @@ module com.example.javaescape {
 
     opens com.example.javaescape to javafx.fxml;
     exports com.example.javaescape;
+    requires org.json;
+
 }

@@ -1,0 +1,93 @@
+
+
+
+/* FOND GLOBAL */
+.root {
+    -fx-background-color: #0d0d0d;
+    -fx-background-image: url("../com/example/javaescape/background.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-padding: 20;
+}
+
+/* LABELS */
+.label {
+    -fx-text-fill: #e6e6e6;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* BOUTONS GLOBAUX */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #3a3aff, #0000cc);
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 15;
+    -fx-padding: 12 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,255,0.6), 15, 0.3, 0, 0);
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255,255,255,0.2);
+    -fx-border-radius: 15;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #5c5cff, #1a1aff);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,255,0.9), 20, 0.4, 0, 0);
+}
+
+.button:pressed {
+    -fx-background-color: #000099;
+    -fx-effect: none;
+}
+
+/* QUIZZ */
+.quiz-answer {
+    -fx-background-color: linear-gradient(to bottom, #222, #111);
+    -fx-text-fill: #e6e6e6;
+    -fx-font-size: 18px;
+    -fx-background-radius: 12;
+    -fx-padding: 10 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0.3, 0, 0);
+}
+
+.quiz-answer:hover {
+    -fx-background-color: #333;
+}
+
+.correct {
+    -fx-background-color: #00cc66 !important;
+}
+
+.incorrect {
+    -fx-background-color: #cc0000 !important;
+}
+
+/* DIALOGUES */
+.dialogue-box {
+    -fx-background-color: rgba(20,20,20,0.8);
+    -fx-text-fill: #e6e6e6;
+    -fx-font-size: 22px;
+    -fx-padding: 15;
+    -fx-background-radius: 15;
+    -fx-border-color: #6a5acd;
+    -fx-border-width: 3;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(100,0,255,0.5), 20, 0.4, 0, 0);
+}
+
+/* MASTERMIND */
+.master-cell {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #444;
+    -fx-border-width: 2;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.master-letter {
+    -fx-font-size: 40px;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
