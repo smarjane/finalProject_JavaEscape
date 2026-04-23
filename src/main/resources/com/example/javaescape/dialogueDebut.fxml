@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.javaescape.dialogueDebutController"
+            prefWidth="1200" prefHeight="800"
+            style="-fx-background-color: rgba(240,240,240,1);"
+            styleClass="/styles/menu.css">
+
+
+<center>
+        <VBox spacing="20" alignment="CENTER">
+
+            <HBox spacing="20" alignment="CENTER_LEFT">
+
+                <TextArea fx:id="zoneTexte"
+                          editable="false"
+                          wrapText="true"
+                          prefWidth="700"
+                          prefHeight="80"
+                          style="
+                              -fx-font-size: 22px;
+                              -fx-background-radius: 10;
+                              -fx-background-color: rgba(255,255,255,0.85);
+                              -fx-text-fill: black;
+                              -fx-padding: 10;
+                              -fx-control-inner-background: rgba(255,255,255,0);
+                              -fx-background-insets: 0;
+                              -fx-border-color: #B0C4DE;
+                              -fx-border-radius: 10;
+                              -fx-border-width: 2;
+                          " />
+
+                <ImageView fx:id="imagePersonnage"
+                           fitWidth="150"
+                           preserveRatio="true"
+                           style="-fx-effect: dropshadow(gaussian, black, 20, 0.5, 0, 0);" />
+
+            </HBox>
+
+            <Button fx:id="btnSuivant"
+                    text="Passer au jeu"
+                    onAction="#goToGame"
+                    style="-fx-font-size: 20px; -fx-padding: 10;" />
+
+        </VBox>
+    </center>
+
+</BorderPane>
