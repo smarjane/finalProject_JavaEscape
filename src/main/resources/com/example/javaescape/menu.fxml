@@ -8,7 +8,9 @@
 <StackPane prefWidth="1200" prefHeight="800"
            xmlns="http://javafx.com/javafx/17.0.12"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.javaescape.MenuController">
+           fx:controller="com.example.javaescape.MenuController"
+           styleClass="@menu.css">
+
 
 
 <VBox alignment="CENTER" spacing="20">
