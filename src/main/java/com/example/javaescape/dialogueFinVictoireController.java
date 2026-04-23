@@ -24,21 +24,23 @@ public class dialogueFinVictoireController {
     private int index = 0;
     private Timeline timeline;
     private boolean isWriting = false;
+    private boolean loadedFromSave = false;
 
     @FXML
     public void initialize() {
-
-        imageFin.setImage( //img de fin
+        imageFin.setImage(
                 new Image(getClass().getResource("/com/example/javaescape/bombeDesamorce.png").toExternalForm())
         );
 
         dialogues = List.of(
                 "Chef : Tu l'as fait… Tu as réussi à désamorcer la bombe et à sauver la ville. Je savais que tu en étais capable.",
-                "Chef : Grâce à toi, des vies ont été sauvées aujourd’hui. Tu as fait preuve de courage, d'intelligence et de détermination dans chaque étape de cette mission. Tu as tout donné, et ça a payé.",
-                "Chef : Bien joué, vraiment. Tu as prouvé qu’il n’y a rien que tu ne puisses accomplir. Je n’oublierai jamais ce jour."
+                "Chef : Grâce à toi, des vies ont été sauvées aujourd'hui. Tu as fait preuve de courage, d'intelligence et de détermination dans chaque étape de cette mission. Tu as tout donné, et ça a payé.",
+                "Chef : Bien joué, vraiment. Tu as prouvé qu'il n'y a rien que tu ne puisses accomplir. Je n'oublierai jamais ce jour."
         );
 
-        afficherDialogue();
+        if (!loadedFromSave) {
+            afficherDialogue();
+        }
 
         zoneTexte.setFocusTraversable(true);
         zoneTexte.requestFocus();
@@ -50,12 +52,48 @@ public class dialogueFinVictoireController {
         });
     }
 
+    public void loadFromSave(SaveManager.GameSave save) {
+        loadedFromSave = true;
+        this.index = save.dialogueIndex;
+
+        // Arrêter toute animation en cours
+        if (timeline != null) {
+            timeline.stop();
+        }
+        isWriting = false;
+
+        javafx.application.Platform.runLater(() -> {
+            if (index >= dialogues.size()) {
+                // Afficher le dernier dialogue
+                zoneTexte.clear();
+                zoneTexte.setText(dialogues.get(dialogues.size() - 1));
+            } else {
+                // Afficher le dialogue en cours COMPLET
+                zoneTexte.clear();
+                zoneTexte.setText(dialogues.get(index));
+            }
+        });
+    }
+
     private void afficherDialogue() {
-        zoneTexte.clear();
-        ecrireLettreParLettre(dialogues.get(index));
+        // Arrêter toute animation en cours
+        if (timeline != null) {
+            timeline.stop();
+        }
+
+        if (index < dialogues.size()) {
+            zoneTexte.clear();
+            ecrireLettreParLettre(dialogues.get(index));
+            saveGame();
+        }
     }
 
     private void ecrireLettreParLettre(String texte) {
+        // Arrêter toute animation en cours
+        if (timeline != null) {
+            timeline.stop();
+        }
+
         isWriting = true;
         zoneTexte.clear();
 
@@ -80,6 +118,7 @@ public class dialogueFinVictoireController {
     private void passerDialogue() {
         if (isWriting) {
             timeline.stop();
+            zoneTexte.clear();
             zoneTexte.setText(dialogues.get(index));
             isWriting = false;
             return;
@@ -90,19 +129,40 @@ public class dialogueFinVictoireController {
         if (index < dialogues.size()) {
             afficherDialogue();
         } else {
-            return; // avant c'etait retourMenu() mais mtn on retourne au menu que via le bouton
+            saveGame();
         }
     }
 
     @FXML
     private void retourMenu() {
         try {
+            // Arrêter la timeline
+            if (timeline != null) {
+                timeline.stop();
+            }
+
+            SaveManager.deleteSave();
             Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
             Stage stage = (Stage) zoneTexte.getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            Scene scene = new Scene(root, 1200, 800);
+
+            // Recharger le CSS car jsp pourquoi il se chargeait pas après le retour menu
+            scene.getStylesheets().add(
+                    getClass().getResource("/styles/menu.css").toExternalForm()
+            );
+
+            stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void saveGame() {
+        SaveManager.GameSave save = new SaveManager.GameSave();
+        save.currentScene = "dialogueFinVictoire";
+        save.dialogueIndex = this.index;
+        SaveManager.saveGame(save);
     }
 }

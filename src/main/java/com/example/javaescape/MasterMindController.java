@@ -55,6 +55,8 @@ public class MasterMindController {
     private static final int maxRetry = 10;
     private static final int codeLength = 4;
     private static final char[] listLetters = {'A', 'B', 'C', 'D'};
+    private List<List<Character>> guessHistory = new ArrayList<>();
+    private List<SaveManager.FeedbackData> feedbackHistory = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -153,9 +155,6 @@ public class MasterMindController {
     }
 
     private void submitGuess() {
-        // On envoie la séléction actuelle
-
-        // Ici on vérif que la sélection est complète sinon on ne fait rien
         if (currentGuess.size() != codeLength) {
             return;
         }
@@ -164,14 +163,12 @@ public class MasterMindController {
             return;
         }
 
-        // Initialise les feedback (indices de placement)
         int correctPosition = 0;
         int correctLetter = 0;
 
         List<Character> secretCopy = new ArrayList<>(secretCode);
         List<Character> guessCopy = new ArrayList<>(currentGuess);
 
-        // On compte les lettres bien placées
         for (int i = 0; i < codeLength; i++) {
             if (currentGuess.get(i).equals(secretCode.get(i))) {
                 correctPosition++;
@@ -180,7 +177,6 @@ public class MasterMindController {
             }
         }
 
-        // On compte les lettres correctes mais mal placées
         for (int i = 0; i < codeLength; i++) {
             if (guessCopy.get(i) != null) {
                 for (int j = 0; j < codeLength; j++) {
@@ -193,56 +189,45 @@ public class MasterMindController {
             }
         }
 
-        // Puis on fait le  total de lettres bien ou mal placées
         int totalCorrect = correctPosition + correctLetter;
 
-        // On affiche dans l'historique la combi envoyée + son num d'essai
         displayInHistory(currentTry, currentGuess);
 
-        // On affiche le feedback avec son texte
         correctPositionLabel.setText("Bien placées :\n" + correctPosition);
         correctLetterLabel.setText("Lettres correcte :\n" + totalCorrect);
 
+        // Sauvegarder dans l'historique
+        guessHistory.add(new ArrayList<>(currentGuess));
+        feedbackHistory.add(new SaveManager.FeedbackData(correctPosition, totalCorrect));
+
         currentTry++;
 
-        // Verif victoire
         if (correctPosition == codeLength) {
             gameState = GameState.VICTORY;
-
-            // On set son texte a afficher + rend jolie
             remainingTriesLabel.setText("VICTOIRE !");
             remainingTriesLabel.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
-
-            // Et on transfo le bouton reset en suivant pour afficher la suite
             resetButton.setText("Suivant");
-            disableButtons(); // On desac aussi les autres bouton pour éviter les problèmes
-
-            allerFinVictoire(); //AJOUT MARJANE pour redirection dialogue victoire
-
+            disableButtons();
+            saveGame(); // Sauvegarder avant de rediriger
+            allerFinVictoire();
             return;
         }
 
-        // Vérif défaite
         if (currentTry >= maxRetry) {
             gameState = GameState.DEFEAT;
-
-            // Pareil : texte + jolie
             remainingTriesLabel.setText("DÉFAITE");
             remainingTriesLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
-
-            // Ici on desac juste les boutons, on le change pas (du moins pas le visuel)
             disableButtons();
-
-            allerFinDefaite(); //AJOUT MARJANE pour redirection dialogue defaite
-
-
+            saveGame(); // Sauvegarder avant de rediriger
+            allerFinDefaite();
             return;
         }
 
-        // Enfin on reset la sélection actuelle
         currentGuess.clear();
         updateCurrentGuessDisplay();
         updateRemainingTries();
+
+        saveGame(); // Sauvegarder après chaque essai
     }
 
     private void displayInHistory(int tryNumber, List<Character> guess) {
@@ -356,6 +341,42 @@ public class MasterMindController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Charger depuis une sauvegarde
+    public void loadFromSave(SaveManager.GameSave save) {
+        this.secretCode = new ArrayList<>(save.secretCode);
+        this.currentTry = save.currentTry;
+        this.guessHistory = new ArrayList<>(save.history);
+        this.feedbackHistory = new ArrayList<>(save.feedbacks);
+
+        // Restaurer l'historique visuel
+        for (int i = 0; i < guessHistory.size(); i++) {
+            displayInHistory(i, guessHistory.get(i));
+        }
+
+        // Restaurer le dernier feedback affiché
+        if (!feedbackHistory.isEmpty()) {
+            SaveManager.FeedbackData lastFeedback = feedbackHistory.get(feedbackHistory.size() - 1);
+            correctPositionLabel.setText("Bien placées :\n" + lastFeedback.correctPosition);
+            correctLetterLabel.setText("Lettres correcte :\n" + lastFeedback.correctLetter);
+        }
+
+        updateRemainingTries();
+
+        System.out.println("Partie MasterMind chargée - Code : " + secretCode + ", Essai: " + currentTry);
+    }
+
+    private void saveGame() {
+        SaveManager.GameSave save = new SaveManager.GameSave();
+        save.currentScene = "MasterMind";
+        save.dialogueIndex = 0;
+        save.secretCode = new ArrayList<>(this.secretCode);
+        save.currentTry = this.currentTry;
+        save.history = new ArrayList<>(this.guessHistory);
+        save.feedbacks = new ArrayList<>(this.feedbackHistory);
+
+        SaveManager.saveGame(save);
     }
 
 }
