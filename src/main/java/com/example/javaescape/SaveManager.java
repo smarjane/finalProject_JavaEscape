@@ -5,24 +5,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaveManager {
-    private static final String SAVE_FILE = "savegame.dat";
+    private static final String SAVE_FILE = "savegame.dat"; //save dans un fichier .dat
 
     public static class GameSave implements Serializable {
         private static final long serialVersionUID = 1L;
 
         public String currentScene;
         public int dialogueIndex;
-        public boolean dialogueFinished; // Pour savoir si tous les dialogues sont terminés
+        public boolean dialogueFinished;
 
         // Pour MasterMind
         public List<Character> secretCode;
         public int currentTry;
         public List<List<Character>> history;
-        public List<FeedbackData> feedbacks; // pour sauvegarder les feedbacks
+        public List<FeedbackData> feedbacks;
+
+        // Pour Quizz
+        public List<QuestionData> quizzQuestions; // Toutes les questions du quiz
+        public int quizzIndex; // Index de la question actuelle
+        public int quizzScore; // Score actuel
+        public boolean quizzAnswered; // Si l'utilisateur a déjà répondu à la question actuelle
+        public String quizzCurrentFeedback; // Le feedback affiché
+        public List<String> quizzCurrentAnswers; // Les 4 réponses mélangées de la question actuelle
 
         public GameSave() {
             this.history = new ArrayList<>();
             this.feedbacks = new ArrayList<>();
+            this.quizzQuestions = new ArrayList<>();
+            this.quizzCurrentAnswers = new ArrayList<>();
         }
     }
 
@@ -38,10 +48,24 @@ public class SaveManager {
         }
     }
 
+    // Classe pour sauvegarder les questions du quiz
+    public static class QuestionData implements Serializable {
+        private static final long serialVersionUID = 1L;
+        public String question;
+        public String correct;
+        public List<String> incorrect;
+
+        public QuestionData(String question, String correct, List<String> incorrect) {
+            this.question = question;
+            this.correct = correct;
+            this.incorrect = new ArrayList<>(incorrect);
+        }
+    }
+
     public static void saveGame(GameSave save) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_FILE))) {
             oos.writeObject(save);
-            System.out.println("Partie sauvegardée - Scene: " + save.currentScene + ", Dialogue: " + save.dialogueIndex);
+            System.out.println("Partie sauvegardée | Scene: " + save.currentScene + ", Dialogue: " + save.dialogueIndex);
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
             e.printStackTrace();

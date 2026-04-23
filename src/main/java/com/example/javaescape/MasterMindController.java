@@ -60,11 +60,10 @@ public class MasterMindController {
 
     @FXML
     public void initialize() {
-        initializeGame();
-        setupButtons();
+        setupButtons(); // uniquement les boutons
     }
 
-    private void initializeGame() {
+    public void initializeGame() {
         // Initialiser
         secretCode = generateSecretCode();
         currentGuess = new ArrayList<>();
@@ -218,7 +217,7 @@ public class MasterMindController {
             remainingTriesLabel.setText("DÉFAITE");
             remainingTriesLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
             disableButtons();
-            saveGame(); // Sauvegarder avant de rediriger
+            saveGame();
             allerFinDefaite();
             return;
         }
@@ -345,10 +344,18 @@ public class MasterMindController {
 
     // Charger depuis une sauvegarde
     public void loadFromSave(SaveManager.GameSave save) {
+        currentGuess = new ArrayList<>();
+        gameState = GameState.PLAYING;
+        enableButtons();
+        resetButton.setText("Reset");
+
         this.secretCode = new ArrayList<>(save.secretCode);
         this.currentTry = save.currentTry;
         this.guessHistory = new ArrayList<>(save.history);
         this.feedbackHistory = new ArrayList<>(save.feedbacks);
+
+        clearHistory();
+
 
         // Restaurer l'historique visuel
         for (int i = 0; i < guessHistory.size(); i++) {

@@ -33,22 +33,81 @@ public class quizzController {
     private int index = 0;
     private int score = 0;
     private boolean aRepondu = false;
+    private boolean loadedFromSave = false;
+    private List<String> currentShuffledAnswers = new ArrayList<>();
 
     @FXML
     public void initialize() {
-
-        chargerQuestionsDepuisAPI();
-        afficherQuestion();
-
-        answerBtn1.setOnAction(e -> verifierReponse(answerBtn1.getText())); //rev javafx en 5 pts src
+        // Configurer les boutons
+        answerBtn1.setOnAction(e -> verifierReponse(answerBtn1.getText()));
         answerBtn2.setOnAction(e -> verifierReponse(answerBtn2.getText()));
         answerBtn3.setOnAction(e -> verifierReponse(answerBtn3.getText()));
         answerBtn4.setOnAction(e -> verifierReponse(answerBtn4.getText()));
-
         nextButton.setOnAction(e -> nextQuestion());
+
+        // Ne charger les questions que si on ne vient pas d'une sauvegarde
+        if (!loadedFromSave) {
+            chargerQuestionsDepuisAPI();
+            afficherQuestion();
+        }
     }
 
-    private String decodeHtml(String text) {//CODE IA caractere HTML et rev src DelftStack src
+    // Charger depuis une sauvegarde
+    public void loadFromSave(SaveManager.GameSave save) {
+        loadedFromSave = true;
+
+        System.out.println("Chargement quiz - index: " + save.quizzIndex + ", score: " + save.quizzScore);
+
+        // Restaurer les questions
+        questions.clear();
+        for (SaveManager.QuestionData qData : save.quizzQuestions) {
+            questions.add(new Question(qData.question, qData.correct, qData.incorrect));
+        }
+
+        this.index = save.quizzIndex;
+        this.score = save.quizzScore;
+        this.aRepondu = save.quizzAnswered;
+        this.currentShuffledAnswers = new ArrayList<>(save.quizzCurrentAnswers);
+
+        javafx.application.Platform.runLater(() -> {
+            afficherQuestionSauvegardee(save);
+        });
+    }
+
+    private void afficherQuestionSauvegardee(SaveManager.GameSave save) {
+        Question q = questions.get(index);
+
+        questionLabel.setText(q.question);
+        mettreAJourScore();
+
+        // Restaurer les réponses dans le même ordre
+        answerBtn1.setText(currentShuffledAnswers.get(0));
+        answerBtn2.setText(currentShuffledAnswers.get(1));
+        answerBtn3.setText(currentShuffledAnswers.get(2));
+        answerBtn4.setText(currentShuffledAnswers.get(3));
+
+        if (aRepondu) {
+            // Si déjà répondu, afficher le feedback et désactiver les boutons
+            feedbackLabel.setText(save.quizzCurrentFeedback);
+            feedbackLabel.setVisible(true);
+            nextButton.setVisible(true);
+            enableButtons(false);
+
+            // Restaurer la couleur du feedback
+            if (save.quizzCurrentFeedback != null && save.quizzCurrentFeedback.startsWith("Correct")) {
+                feedbackLabel.setStyle("-fx-text-fill: green;");
+            } else {
+                feedbackLabel.setStyle("-fx-text-fill: red;");
+            }
+        } else {
+            // Question pas encore répondue
+            feedbackLabel.setVisible(false);
+            nextButton.setVisible(false);
+            enableButtons(true);
+        }
+    }
+
+    private String decodeHtml(String text) {
         return text
                 .replace("&quot;", "\"")
                 .replace("&#039;", "'")
@@ -58,7 +117,7 @@ public class quizzController {
     }
 
     private void chargerQuestionsDepuisAPI() {
-        try { //corps API rev javaspring.net src
+        try {
             URL url = new URL("https://opentdb.com/api.php?amount=20&type=multiple");
             BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
             StringBuilder json = new StringBuilder();
@@ -91,9 +150,9 @@ public class quizzController {
         }
     }
 
-    private void mettreAJourScore () {
-        scoreLabel.setText(score + "/5"); //nbr bonne rep
-        questionCountLabel.setText((index + 1) + "/20"); //nbr question sur 20
+    private void mettreAJourScore() {
+        scoreLabel.setText(score + "/5");
+        questionCountLabel.setText((index + 1) + "/20");
     }
 
     private void afficherQuestion() {
@@ -111,7 +170,11 @@ public class quizzController {
         reponses.add(q.correct);
         reponses.addAll(q.incorrect);
 
-        Collections.shuffle(reponses); //rev baeeldung ssrc
+        Collections.shuffle(reponses);
+
+        // Sauvegarder l'ordre mélangé
+        currentShuffledAnswers.clear();
+        currentShuffledAnswers.addAll(reponses);
 
         answerBtn1.setText(reponses.get(0));
         answerBtn2.setText(reponses.get(1));
@@ -119,6 +182,8 @@ public class quizzController {
         answerBtn4.setText(reponses.get(3));
 
         enableButtons(true);
+
+        saveGame();
     }
 
     private void verifierReponse(String reponseChoisie) {
@@ -139,17 +204,21 @@ public class quizzController {
         feedbackLabel.setVisible(true);
         nextButton.setVisible(true);
         enableButtons(false);
+
+        saveGame();
     }
 
     private void nextQuestion() {
         index++;
 
         if (score >= 5) {
+            saveGame();
             allerDialogueInter();
             return;
         }
 
         if (index >= 20) {
+            saveGame();
             allerDialogueDefaite();
             return;
         }
@@ -158,13 +227,13 @@ public class quizzController {
     }
 
     private void enableButtons(boolean enable) {
-        answerBtn1.setDisable(!enable); //rev codingtechroom src
+        answerBtn1.setDisable(!enable);
         answerBtn2.setDisable(!enable);
         answerBtn3.setDisable(!enable);
         answerBtn4.setDisable(!enable);
     }
 
-    private void allerDialogueInter() { //juste appelle dial inter
+    private void allerDialogueInter() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("dialogueIntermediaire.fxml"));
             Stage stage = (Stage) questionLabel.getScene().getWindow();
@@ -175,7 +244,7 @@ public class quizzController {
         }
     }
 
-    private void allerDialogueDefaite() { //juste renvoie a dial defaite si perds
+    private void allerDialogueDefaite() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("dialogueFinDefaite.fxml"));
             Stage stage = (Stage) questionLabel.getScene().getWindow();
@@ -184,6 +253,26 @@ public class quizzController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void saveGame() {
+        SaveManager.GameSave save = new SaveManager.GameSave();
+        save.currentScene = "quizz";
+        save.dialogueIndex = 0;
+
+        // Sauvegarder les questions
+        save.quizzQuestions = new ArrayList<>();
+        for (Question q : questions) {
+            save.quizzQuestions.add(new SaveManager.QuestionData(q.question, q.correct, q.incorrect));
+        }
+
+        save.quizzIndex = this.index;
+        save.quizzScore = this.score;
+        save.quizzAnswered = this.aRepondu;
+        save.quizzCurrentFeedback = feedbackLabel.getText();
+        save.quizzCurrentAnswers = new ArrayList<>(this.currentShuffledAnswers);
+
+        SaveManager.saveGame(save);
     }
 
     private static class Question {

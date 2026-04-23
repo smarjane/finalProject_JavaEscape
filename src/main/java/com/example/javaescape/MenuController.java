@@ -14,7 +14,6 @@ public class MenuController {
 
     @FXML
     public void initialize() {
-        // Désactiver le bouton "Reprendre" s'il n'y a pas de sauvegarde
         if (!SaveManager.saveExists()) {
             btnResumer.setDisable(true);
         }
@@ -22,7 +21,6 @@ public class MenuController {
 
     @FXML
     void onDemarrer(ActionEvent event) throws Exception {
-        // Supprimer la sauvegarde existante pour une nouvelle partie
         SaveManager.deleteSave();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("dialogueDebut.fxml"));
@@ -43,38 +41,60 @@ public class MenuController {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
         FXMLLoader loader;
 
-        // Charger la scène appropriée en fonction de la sauvegarde
+        // Gestion des saves a load
         switch (save.currentScene) {
             case "dialogueDebut":
                 loader = new FXMLLoader(getClass().getResource("dialogueDebut.fxml"));
-                stage.setScene(new Scene(loader.load()));
+                // Charger d'abord
+                Scene sceneDebut = new Scene(loader.load());
+                // Puis récupérer le contrôleur et charger la save
                 dialogueDebutController controller = loader.getController();
                 controller.loadFromSave(save);
+                stage.setScene(sceneDebut);
+                break;
+
+            case "quizz":
+                loader = new FXMLLoader(getClass().getResource("quizz.fxml"));
+                Scene sceneQuizz = new Scene(loader.load());
+                quizzController quizzCtrl = loader.getController();
+                quizzCtrl.loadFromSave(save);
+                stage.setScene(sceneQuizz);
+                break;
+
+            case "dialogueIntermediaire":
+                loader = new FXMLLoader(getClass().getResource("dialogueIntermediaire.fxml"));
+                Scene sceneInter = new Scene(loader.load());
+                dialogueIntermediaireController interCtrl = loader.getController();
+                interCtrl.loadFromSave(save);
+                stage.setScene(sceneInter);
                 break;
 
             case "MasterMind":
                 loader = new FXMLLoader(getClass().getResource("MasterMind.fxml"));
-                stage.setScene(new Scene(loader.load()));
+                Scene sceneMM = new Scene(loader.load());
                 MasterMindController mmController = loader.getController();
                 mmController.loadFromSave(save);
+                stage.setScene(sceneMM);
                 break;
 
             case "dialogueFinVictoire":
                 loader = new FXMLLoader(getClass().getResource("dialogueFinVictoire.fxml"));
-                stage.setScene(new Scene(loader.load()));
+                Scene sceneVictoire = new Scene(loader.load());
                 dialogueFinVictoireController vicController = loader.getController();
                 vicController.loadFromSave(save);
+                stage.setScene(sceneVictoire);
                 break;
 
             case "dialogueFinDefaite":
                 loader = new FXMLLoader(getClass().getResource("dialogueFinDefaite.fxml"));
-                stage.setScene(new Scene(loader.load()));
+                Scene sceneDefaite = new Scene(loader.load());
                 dialogueFinDefaiteController defController = loader.getController();
                 defController.loadFromSave(save);
+                stage.setScene(sceneDefaite);
                 break;
 
             default:
-                System.err.println("Scène inconnue : " + save.currentScene);
+                System.err.println("Scène introuvable : " + save.currentScene);
                 return;
         }
 
