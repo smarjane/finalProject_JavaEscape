@@ -59,6 +59,8 @@ Solution utilisée :
 - Commit et push
 - Les images sont désormais correctement présentes sur Github
 
+### 4.4. Autre
+- Par manque de temps sur cette dernière journée, nous n'avons pas pû terminer le CSS ainsi que de mieux répartir les fonctions en plusieurs fichiers.
 
 ## 5. Utilisation de l’IA dans le projet pour MARJANE 
 Avant d’utiliser l’IA, des recherches personnelles ont été effectuées, mais certaines réponses n’ont pas été trouvées.
@@ -74,3 +76,6 @@ L’IA a été utilisée de manière respectueuse :
 
 L’objectif était de l’utiliser l’IA comme assistant technique et pas de me remplacer !
 
+Pour Thibaud :
+- Aide pour le debug et la compréhension des erreurs IntelliJ
+- Aide pour le debug d'un problème lié au saves sur le MasterMind
