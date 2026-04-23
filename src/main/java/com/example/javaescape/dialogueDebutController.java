@@ -100,7 +100,7 @@ public class dialogueDebutController {
 
     @FXML
     private void goToGame() throws Exception { //func appeler quand clique sur btn passer au jeu
-        Parent root = FXMLLoader.load(getClass().getResource("MasterMind.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("quizz.fxml"));
         Stage stage = (Stage) zoneTexte.getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
