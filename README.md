@@ -70,5 +70,7 @@ L’IA a été utilisée de manière respectueuse :
 - Aide pour intégrer le background du début 
 - Les parties générées par IA sont clairement commentées dans le code
 - Aide pour les parties de style pour les fichiers .fxml et css notamment le quizz.fxml
+
+
 L’objectif était de l’utiliser l’IA comme assistant technique et pas de me remplacer !
 
