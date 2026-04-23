@@ -20,15 +20,15 @@ Dans le fichier pom.xml, ajouter :
 </dependency>
 ### 2.3. Synchronisation Maven
 Dans IntelliJ :
-•	Ouvrir l’onglet Maven à droite
-•	Cliquer sur l’icône des flèches tourantes « Sync All Maven Projects »
+- Ouvrir l’onglet Maven à droite
+- Cliquer sur l’icône des flèches tourantes « Sync All Maven Projects »
 ### 2.4. Mise à jour du module-info.java
 Ajouter la ligne suivante :
 requires org.json;
 Cette étape est indispensable pour permettre au module JavaFX d’accéder à la librairie JSON. Si elle n’est pas ajouter, tous les imports dans le quizzController apparaitrons en rouge 
 ### 2.5. Rebuild et lancement
-•	Menu Build → Rebuild Project
-•	Lancer l’application via la classe principale
+- Menu Build → Rebuild Project
+- Lancer l’application via la classe principale
 
 
 ## 3. Guide de l’application et hiérarchie des scènes
@@ -36,11 +36,11 @@ L’application suit un chemin précis :
 - Menu principal
 - Dialogue de début
 - Quiz (20 questions, victoire à 5 bonnes réponses) 
-    o	Si le joueur perd : Dialogue de fin de défaite
-    o	Si le joueur gagne : Dialogue intermédiaire
+    - Si le joueur perd : Dialogue de fin de défaite
+    - Si le joueur gagne : Dialogue intermédiaire
 - Mastermind 
-    o	Si le joueur perd : Dialogue de défaite
-    o	Si le joueur gagne : Dialogue de victoire
+    - Si le joueur perd : Dialogue de défaite
+    - Si le joueur gagne : Dialogue de victoire
 - Depuis les dialogues finaux : possibilité de revenir au menu via un bouton « revenir au menu »
 
 
@@ -54,21 +54,21 @@ Cependant, plusieurs sources indiquent que certains caractères peuvent encore a
 ### 4.3. Problème de commit/push des images
 IntelliJ ne prenait pas en compte certains fichiers .jpg ou .png lors des commits via l’interface graphique.
 Solution utilisée :
-•	Passage par le terminal Git
-•	Ajout manuel des fichiers (git add .)
-•	Commit et push
-•	Les images sont désormais correctement présentes sur Github
+- Passage par le terminal Git
+- Ajout manuel des fichiers (git add .)
+- Commit et push
+- Les images sont désormais correctement présentes sur Github
 
 
 ## 5. Utilisation de l’IA dans le projet pour MARJANE 
 Avant d’utiliser l’IA, des recherches personnelles ont été effectuées, mais certaines réponses n’ont pas été trouvées.
 L’IA a été utilisée de manière respectueuse :
-•	Aide pour importer la dépendance JSON dans Maven
-•	Aide pour résoudre des erreurs de module (requires org.json)
-•	Aide pour structurer le code de navigation entre les pages
-•	Aide pour corriger des erreurs JavaFX
-•	Aide pour intégrer le background du début 
-•	Les parties générées par IA sont clairement commentées dans le code
-•	Aide pour les parties de style pour les fichiers .fxml et css notamment le quizz.fxml
+- Aide pour importer la dépendance JSON dans Maven
+- Aide pour résoudre des erreurs de module (requires org.json)
+- Aide pour structurer le code de navigation entre les pages
+- Aide pour corriger des erreurs JavaFX
+- Aide pour intégrer le background du début 
+- Les parties générées par IA sont clairement commentées dans le code
+- Aide pour les parties de style pour les fichiers .fxml et css notamment le quizz.fxml
 L’objectif était de l’utiliser l’IA comme assistant technique et pas de me remplacer !
 
